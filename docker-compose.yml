@@ -1,0 +1,36 @@
+# docker-compose.yml
+version: "3"
+services:
+  app:
+    restart: on-failure
+    build: .
+    depends_on:
+      - postgres
+    environment:
+      SECRET: "verysecretivesecret123"
+      DATABASE_URL: postgres://user:pass@postgres:5432/db
+      NODE_ENV: development
+      PORT: 3000
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    command: npm run dev
+    volumes:
+      - .:/app/
+      - /app/node_modules
+
+  postgres:
+    restart: on-failure
+    image: postgres:11
+    ports:
+      - "65432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql/1-schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./init.sql/2-data.sql:/docker-entrypoint-initdb.d/2-data.sql
+volumes:
+  pgdata:
