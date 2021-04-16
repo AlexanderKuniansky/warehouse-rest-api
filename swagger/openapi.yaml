@@ -1,0 +1,106 @@
+openapi: 3.0.0
+info:
+  title: Warehouse API
+  description: Example of a REST api with authentication using Node.js , Express, PostgreSQL and JWT
+  version: 0.1.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /register:
+    post:
+      summary: Register and get a token
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_name:
+                  type: string
+                user_login:
+                  type: string
+                user_password:
+                  type: string
+              required:
+                - user_name
+                - user_login
+                - user_password
+      responses:
+        "201":
+          description: Created, token provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authentication:
+                    type: boolean
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+        "400":
+          description: Unable to create
+  /login:
+    post:
+      summary: Get a token
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                user_login:
+                  type: string
+                user_password:
+                  type: string
+              required:
+                - user_login
+                - user_password
+      responses:
+        "200":
+          description: Loged in, token provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authentication:
+                    type: boolean
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+        "401":
+          description: Wrong input/Wrong password/Username not found
+  /categories:
+    get:
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: Token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+      summary: Returns a list of categories.
+      responses:
+        "200":
+          description: All categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                example:
+                  - id: 1
+                    category_name: Food
+                  - id: 2
+                    category_name: Tools
+                  - id: 3
+                    category_name: Brooms
+                  - id: 4
+                    category_name: Other food
+        "404":
+          description: Category not found

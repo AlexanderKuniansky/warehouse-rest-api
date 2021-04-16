@@ -1,5 +1,7 @@
 Example of a REST api with authentication using Node.js , Express, PostgreSQL and JWT
 
+Partial API documentation can be found in swagger folder
+
 Install necessary node modules:
 
 ```
@@ -26,3 +28,5 @@ docker volume rm $(docker volume ls -q)
 docker rm -f $(docker ps -a -q)
 docker-compose up -d
 ```
+
+//TODO: add more info

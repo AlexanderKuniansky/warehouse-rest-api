@@ -16,7 +16,7 @@ const createUser = (request, response) => {
 
   //Checks all needed values are present
   if (!user_name || !user_login || !user_password) {
-    return response.status(401).send({
+    return response.status(400).send({
       authentication: false,
       message: 'Name, login and password needed'
     })
@@ -30,7 +30,7 @@ const createUser = (request, response) => {
     (error, results) => {
       if (error) {
         //If value too long gonna error, or if already exists - no bueno
-        return response.status(401).send({
+        return response.status(400).send({
           authentication: false,
           message: "User can't be created"
         })
@@ -43,7 +43,7 @@ const createUser = (request, response) => {
         expiresIn: 60 * 60 * 24 * 7 // expires in 7 days
       })
       //Return token
-      return response.status(200).send({
+      return response.status(201).send({
         authentication: true,
         token: token
       })
@@ -78,7 +78,7 @@ const loginUser = (request, response) => {
       }
 
       if (results.rows.length === 0) {
-        return response.status(406).json('Username not found')
+        return response.status(401).json('Username not found')
       }
 
       // Check if the password is valid
