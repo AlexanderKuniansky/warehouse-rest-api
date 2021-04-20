@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Warehouse API
   description: Example of a REST api with authentication using Node.js , Express, PostgreSQL and JWT
-  version: 0.2.0
+  version: 0.2.1
 servers:
   - url: http://localhost:3000
 tags:
@@ -155,7 +155,7 @@ paths:
     get:
       tags:
         - "Categories"
-      summary: Returns category name by id
+      summary: Returns category information by id
       parameters:
         - in: path
           name: id
@@ -331,7 +331,7 @@ paths:
     get:
       tags:
         - "Products"
-      summary: Returns product name by id
+      summary: Returns product information by id
       parameters:
         - in: path
           name: id
@@ -357,8 +357,12 @@ paths:
                 items:
                   type: object
                 example:
-                  - id: 1
-                    product_name: Food
+                - id: 1
+                  product_name: onion
+                  product_description: onions are tasty
+                  price_per_piece: 5.43
+                  quantity: 123
+                  category_id: 1
         "404":
           description: No product found
         "406":
