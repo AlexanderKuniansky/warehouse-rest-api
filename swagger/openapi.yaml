@@ -2,12 +2,21 @@ openapi: 3.0.0
 info:
   title: Warehouse API
   description: Example of a REST api with authentication using Node.js , Express, PostgreSQL and JWT
-  version: 0.1.0
+  version: 0.2.0
 servers:
   - url: http://localhost:3000
+tags:
+  - name: "Authentication"
+    description: "Get your token here"
+  - name: "Categories"
+    description: "CRUD categories"
+  - name: "Products"
+    description: "CRUD products"
 paths:
   /register:
     post:
+      tags:
+        - "Authentication"
       summary: Register and get a token
       requestBody:
         required: true
@@ -17,10 +26,13 @@ paths:
               type: object
               properties:
                 user_name:
+                  default: Alex
                   type: string
                 user_login:
+                  default: user
                   type: string
                 user_password:
+                  default: password
                   type: string
               required:
                 - user_name
@@ -43,6 +55,8 @@ paths:
           description: Unable to create
   /login:
     post:
+      tags:
+        - "Authentication"
       summary: Get a token
       requestBody:
         required: true
@@ -52,8 +66,10 @@ paths:
               type: object
               properties:
                 user_login:
+                  default: user
                   type: string
                 user_password:
+                  default: password
                   type: string
               required:
                 - user_login
@@ -75,6 +91,9 @@ paths:
           description: Wrong input/Wrong password/Username not found
   /categories:
     get:
+      tags:
+        - "Categories"
+      summary: Returns a list of categories.
       parameters:
         - in: header
           name: x-access-token
@@ -83,7 +102,6 @@ paths:
           required: true
           description: Token
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
-      summary: Returns a list of categories.
       responses:
         "200":
           description: All categories
@@ -103,4 +121,307 @@ paths:
                   - id: 4
                     category_name: Other food
         "404":
-          description: Category not found
+          description: Categories not found
+    post:
+      tags:
+        - "Categories"
+      summary: Create a category
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: Token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                category_name:
+                  default: New category
+                  type: string
+              required:
+                - category_name
+      responses:
+        "201":
+          description: "Category added with ID:"
+        "406":
+          description: Category can't be added
+  /categories/{id}:
+    get:
+      tags:
+        - "Categories"
+      summary: Returns category name by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Category id
+          example: 1
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: Token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+      responses:
+        "200":
+          description: All categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                example:
+                  - id: 1
+                    category_name: Food
+        "404":
+          description: No category found
+        "406":
+          description: Invalid input
+    put:
+      tags:
+        - "Categories"
+      summary: Edit a category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Category id
+          example: 1
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: Token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                category_name:
+                  default: Edited category
+                  type: string
+              required:
+                - category_name
+      responses:
+        "200":
+          description: "Category modified with ID:"
+        "406":
+          description: Category can't be updated
+    delete:
+      tags:
+        - "Categories"
+      summary: Delete a category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Category id
+          example: 1
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: Token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+      responses:
+        "200":
+          description: "Category deleted with ID:"
+        "406":
+          description: Invalid input
+        "404":
+          description: "No category with ID:"
+  /products:
+    get:
+      tags:
+        - "Products"
+      summary: Returns a list of products.
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: Token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+      responses:
+        "200":
+          description: All products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                example:
+                - id: 1
+                  product_name: onion
+                  product_description: onions are tasty
+                  price_per_piece: 5.43
+                  quantity: 123
+                  category_id: 1
+                - id: 2
+                  product_name: not onion
+                  product_description: onions are tasty
+                  price_per_piece: 5.43
+                  quantity: 123
+                  category_id: 1
+                - id: 3
+                  product_name: new product6
+                  product_description: very new
+                  price_per_piece: 3.45
+                  quantity: 7
+                  category_id: 3
+                - id: 4
+                  product_name: Broomiest broom
+                  product_description: null
+                  price_per_piece: null
+                  quantity: null
+                  category_id: 3
+        "404":
+          description: Products not found
+    post:
+      tags:
+        - "Products"
+      summary: Create a product
+      parameters:
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: Token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                product_name:
+                  default: New product
+                  type: string
+              required:
+                - product_name
+      responses:
+        "201":
+          description: "Category added with ID:"
+        "406":
+          description: Category can't be added
+  /products/{id}:
+    get:
+      tags:
+        - "Products"
+      summary: Returns product name by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Category id
+          example: 1
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: Token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+      responses:
+        "200":
+          description: All products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                example:
+                  - id: 1
+                    product_name: Food
+        "404":
+          description: No product found
+        "406":
+          description: Invalid input
+    put:
+      tags:
+        - "Products"
+      summary: Edit a product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Category id
+          example: 1
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: Token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                product_name:
+                  default: Edited product
+                  type: string
+              required:
+                - product_name
+      responses:
+        "200":
+          description: "Category modified with ID:"
+        "406":
+          description: Category can't be updated
+    delete:
+      tags:
+        - "Products"
+      summary: Delete a product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Category id
+          example: 1
+        - in: header
+          name: x-access-token
+          schema:
+            type: string
+          required: true
+          description: Token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTMsImlhdCI6MTYxODU3MjM1OCwiZXhwIjoxNjE5MTc3MTU4fQ.AAVTqI964-KC1YeRXyxmOGG5tAyOSLxQMmCP3Z4UB-w
+      responses:
+        "200":
+          description: "Category deleted with ID:"
+        "406":
+          description: Invalid input
+        "404":
+          description: "No product with ID:"

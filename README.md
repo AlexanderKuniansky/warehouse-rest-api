@@ -1,6 +1,7 @@
 Example of a REST api with authentication using Node.js , Express, PostgreSQL and JWT
 
-Partial API documentation can be found in swagger folder
+API documentation can be found in swagger folder.
+Enable CORS if you want to test it.
 
 Install necessary node modules:
 
