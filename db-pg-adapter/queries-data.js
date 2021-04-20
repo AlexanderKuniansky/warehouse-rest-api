@@ -59,7 +59,11 @@ const updateCategory = (request, response) => {
         return response.status(406).send(`Category can't be updated`)
         //throw error
       }
-      return response.status(200).send(`Category modified with ID: ${id}`)
+      if (results.rowCount == 0) {
+        return response.status(404).send(`No category with ID: ${id}`)
+      } else {
+        return response.status(200).send(`Category edited with ID: ${id}`)
+      }
     }
   )
 }
@@ -69,11 +73,11 @@ const deleteCategory = (request, response) => {
 
   pool.query('DELETE FROM categories WHERE id = $1', [id], (error, results) => {
     if (error) {
-      return response.status(406).send(`Category can't be deleted`)
+      return response.status(406).send(`Invalid input`)
       //throw error
     }
     if (results.rowCount == 0) {
-      return response.status(200).send(`No category with ID: ${id}`)
+      return response.status(404).send(`No category with ID: ${id}`)
     } else {
       return response.status(200).send(`Category deleted with ID: ${id}`)
     }
@@ -145,7 +149,11 @@ const updateProduct = (request, response) => {
         return response.status(406).send(`Product can't be updated`)
         //throw error
       }
-      return response.status(200).send(`Product modified with ID: ${id}`)
+      if (results.rowCount == 0) {
+        return response.status(404).send(`No product with ID: ${id}`)
+      } else {
+        return response.status(200).send(`Product modified with ID: ${id}`)
+      }
     }
   )
 }
@@ -155,11 +163,11 @@ const deleteProduct = (request, response) => {
 
   pool.query('DELETE FROM products WHERE id = $1', [id], (error, results) => {
     if (error) {
-      return response.status(406).send(`Product can't be deleted`)
+      return response.status(406).send(`Invalid input`)
       //throw error
     }
     if (results.rowCount == 0) {
-      return response.status(200).send(`No product with ID: ${id}`)
+      return response.status(404).send(`No product with ID: ${id}`)
     } else {
       return response.status(200).send(`Product deleted with ID: ${id}`)
     }
