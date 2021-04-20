@@ -23,7 +23,7 @@ services:
     restart: on-failure
     image: postgres:11
     ports:
-      - "65432:5432"
+      - "35432:5432"
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
